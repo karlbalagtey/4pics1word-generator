@@ -1,4 +1,4 @@
-//
+// Source: http://www.infochimps.com/datasets/word-list-of-64000-common-english-dictionary-words-most-with-def
 
 var dict = [
 'aa',
