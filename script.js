@@ -77,37 +77,50 @@
             possibleLetters.push(letters.charAt(i));
         }
 
+        // Check that the browser has support for web workers.
+        if ( window.Worker ) {
+            // The web worker that will do the word generation.
+            var worker = new Worker("generate.js");
 
-        // The web worker that will do the word generation.
-        var worker = new Worker("generate.js");
+            // Start the worker and hand it the dictionary, possible letters and the number of spaces.
+            worker.postMessage({
+                "dict" : dict,
+                "letters" : possibleLetters,
+                "spaces" : spaces
+            });
 
-        // Start the worker and hand it the dictionary, possible letters and the number of spaces.
-        worker.postMessage({
-            "dict" : dict,
-            "letters" : possibleLetters,
-            "spaces" : spaces
-        });
-
-        // Clear out the <ul> of any previously generated words
-        ul.innerHTML = "";
-        
-        // Listener for any messages sent back by the worker.
-        worker.addEventListener("message", function (e) {
-            // Get the data.
-            var response = e.data;
+            // Clear out the <ul> of any previously generated words
+            ul.innerHTML = "";
             
-            // If the last word generation timed out, re-enable the text inputs and stop the loading animation.
-            if ( response.timeout == true ) {
-                inpLetters.removeAttribute("disabled");
-                inpSpaces.removeAttribute("disabled");
-                btnLoad(btnExecute, "complete");
-            }
-            // Or else, create a new <li> for the generated word and append it to the <ul>.
-            else {
-                var li = document.createElement("li");
-                li.innerHTML = response.word;
-                ul.appendChild(li);
-            }
-        }, false);          
+            // Listener for any messages sent back by the worker.
+            worker.addEventListener("message", function (e) {
+                // Get the data.
+                var response = e.data;
+                
+                // If the last word generation timed out, re-enable the text inputs and stop the loading animation.
+                if ( response.timeout == true ) {
+                    inpLetters.removeAttribute("disabled");
+                    inpSpaces.removeAttribute("disabled");
+                    btnLoad(btnExecute, "complete");
+                }
+                // Or else, create a new <li> for the generated word and append it to the <ul>.
+                else {
+                    var li = document.createElement("li");
+                    li.innerHTML = response.word;
+                    ul.appendChild(li);
+                }
+            }, false);
+        }
+        // If not (IE <= 9) then show an error message.
+        else {
+            var li = document.createElement("li");
+            li.setAttribute("class", "no-support");
+            li.innerHTML = "Your browser doesn't support <a href=\"http://en.wikipedia.org/wiki/Web_worker\">Web Workers</a> so unfortunately you are unable to run this program. Please consider upgrading to a <a href=\"http://browsehappy.com/\">modern browser.</a>";
+            ul.appendChild(li);
+            
+            inpLetters.removeAttribute("disabled");
+            inpSpaces.removeAttribute("disabled");
+            btnLoad(btnExecute, "complete");
+        }  
     });
 })();

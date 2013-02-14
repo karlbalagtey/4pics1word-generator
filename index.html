@@ -8,10 +8,11 @@
 </head>
 <body>
     <div id="wrapper">
+        <h1>4 Pics 1 Word Generator</h1>
         <input type="text" id="letters" autofocus placeholder="Letters"/><input type="number" id="spaces" min="1" placeholder="Spaces" />
         <button id="execute">Generate Possible Words</button>
         <ul id="possibleWordList"></ul>
-        <p>Note: It doesn't work perfectly, it sometimes won't retrieve any words at all in which case you should hit 'generate' again. It also seems to be less reliable when dealing with longer words.</p>
+        <p>The program doesn't work perfectly as words are searched for randomly with no algorithm. For this reason, not all possible combinations will always be found, however you should still hit generate a couple of times before giving up on it because you might get lucky! It also works better with medium sized words (small words return lots of combinations and large words take a long time to find).</p>
         <p>Created by <a href="http://jamesturner.im">James Turner</a></p>
     </div>
     <script src="script.js"></script>
